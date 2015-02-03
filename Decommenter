@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <ctype.h>
+
+typedef enum{comment, forward_slash, star, normal, quotes} States;  /*  defining the five states that the program runs through as it reads the input file */
+
+
+
+int main(void){
+
+	int newLine,c,commentLine;
+	States state;
+	state = normal;		
+	newLine= 0;
+
+
+	while((c=getchar())!=EOF){   /* the loop will run until the End Of File character is reached*/
+	
+		switch(state)		/* a switch statement that will depend on what the most recent state is*/
+		{
+
+			case(forward_slash):				/* defines the behavior of the forward_slash state */
+								
+				if(c=='*')
+				state = comment;	/* if I am in the forward_slash state and the current character is a star,
+							   that means the state is now comment*/
+				else
+				{
+					state=normal;  /* if the current character is not a star, then the program goes back to normal state*/
+					putchar('/'); /* need to putchar('/') because we ignored it previously thinking a comment would start*/
+					putchar(c);	/* need to output the current character as well */
+				}
+			
+			break;
+
+			case(star):					/* defines the behavior of the star state */
+			
+				if(c=='/')
+				{				/* if the current character is a '/' then  the comment is closed and state is normal*/
+				state = normal;
+					if ((c=getchar())!=' ')
+						putchar(' ');
+						putchar(c);
+				}
+				else
+				state = comment;			/* otherwise the program is still in the comment state */
+				
+			break;
+		
+
+			case(normal):					/* defines the behavior of the normal state */
+			
+				if(c != '/')				/* if the current character is not equal to forward slash, then a comment is not beginning so the state is normal and output the character */
+				{
+					putchar(c);
+					state = normal;
+				}
+
+				if(c=='"')				/* if the current character is quotes then the state is equal to quotes */
+					state = quotes;
+			
+				else if(c=='/')				/* if the current character is a forward slash then the state is equal to forward_slash */
+					state = forward_slash;
+			break;
+
+			case(comment):					/* defines the behavior of the comment state */
+
+				if(c == '*')				/* if the current character is a star, then the state becomes a star because the comment may be closing */
+					state = star;
+
+				else
+					state = comment;		/* if the current character is not a star then the state remains in the comment state */
+
+			break;
+
+			case(quotes):					/* defines the behavior of the quotes state */
+			
+				if(c == '"')				/* if the current character is  a quote then the state returns to normal */
+				{
+					state = normal;
+				}
+				else					/* if the current character is not a quote then the quote state continues and we output the current character */
+				{
+				putchar(c);
+				state = quotes;
+				}
+			break;
+			
+			}		
+
+		if(c == '\n')						/* keeps an updated line count */
+			newLine++;
+	}
+	
+	if(state == comment)							/* when the program is done running, it will check if the state is still in comment and throw an error if it is */
+		printf("\nError: There is an unterminated comment in the program.\n");
+}
+
+
+
