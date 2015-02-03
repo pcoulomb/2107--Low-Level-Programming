@@ -1,0 +1,272 @@
+#include <stdio.h>
+
+#define LEN_A 10
+
+void print_array(int[], int);
+void reverse(int[], int);
+double average(int[], int);
+void insert(int[], int, int, int);
+int less_than_average(int[], int);
+void rotate_right(int[], int, int);
+void array_copy(int[], int[], int);
+void initialize(int[], int, int);
+void evens_on_left(int[], int);
+int secondLargest(int[], int);
+
+int main(int argc, char **argv)
+{
+  int A[] = {9, 21, 321, 117, 27, 64, 13, 9, 12, 208};
+  int B[LEN_A+1];
+  int newValue=505;
+
+  printf("A[] is:\n");
+  print_array(A, LEN_A);
+
+  initialize(B, LEN_A+1, 0);
+  printf("B[] is:\n");
+  print_array(B, LEN_A+1);
+
+  array_copy(B, A, LEN_A);
+  printf("but now it's\n");
+  print_array(B, LEN_A+1);
+
+  insert(B, newValue, 1, LEN_A);
+  printf("and after inserting %d at the beginning it's\n", newValue);
+  print_array(B, LEN_A+1);
+
+  printf("The average of A[] is %f\n", average(A,LEN_A));
+  printf("There are %d items in A[] less than this.\n", less_than_average(A,LEN_A));
+
+  reverse(A, LEN_A);
+  print_array(A, LEN_A);
+
+  rotate_right(A, LEN_A, 3);
+  print_array(A, LEN_A);
+
+  evens_on_left(A, LEN_A);
+  print_array(A, LEN_A);
+
+printf("The second largest number in the array is %d\n", secondLargest(A,LEN_A));
+
+  return 0;
+}
+
+/* prints A[] inside parentheses with each value separated
+   by commas to stdout (which will be the screen). */
+void print_array(int A[], int length) {
+
+int i;
+
+/*runs through the loop once for each element and prints it to the screen with a comma*/
+	
+	printf("(");
+for(i=0;i<length-1;i++)
+{
+	printf("%d, ",A[i]);
+
+} 
+	printf("%d)\n",A[i]);
+}
+/* returns the average of the items in A[] or 0.0 if A is empty */
+
+double average(int A[], int length) {
+  /* for now return 1.0 as a placeholder.  We do this just so that the program compiles without warning until we've finished */
+
+int i;
+double sum=0;
+double average=0;
+
+/*runs once for each element of the array and adds the contents of that address to the total sum, then divide by the number of elements to find and return the average*/
+
+for(i=0;i<length;i++)
+{
+	sum = sum + A[i];
+}
+	average = sum / length;
+
+	return average;
+
+/*checks to make sure the array is not empty, if it is empty this will return 0.0 to the screen*/
+
+if(length==0)
+	return 0.0;
+}
+
+/* returns the number of items in A that are less than the
+average of the items in A */
+
+int less_than_average(int A[], int length) { 
+
+double avg;
+avg =average(A,length);
+int i;
+int count=0;
+
+/*will run the loop once for each element and check if the ith element is less than the average. If it is then the counter is incremented, will return the counter which is the number of items less than average.*/
+
+for(i=0;i<length;i++)
+{
+	if (A[i]<avg)
+ 	{
+		count++;
+	}
+}
+
+  return count;
+}
+
+/* Reverses the values in A[].  For example, if before the function, A[] contained [1,2,3,4,5], after the function, A[] contains[5,4,3,2,1] */
+
+void reverse(int A[], int length) {
+
+int i;
+int B[length];
+int j;
+
+/*runs through the loop and copies the last elements of A into the first elements of B. i increments so the A[length-i] will ensure that as i increases I move through all the elements of A[]*/
+
+for(i=1;i<=length;i++)
+{
+	B[i-1]=A[length-i];
+}
+
+/*runs through the loop and sets the contents of every element of A[] equal to the same ith element of B[]*/
+
+for(j=0;j<length;j++)
+	A[j]=B[j];
+}
+
+/* returns the second largest item in A[], or -1 if len < 2 */
+int secondLargest(int A[], int length) {
+  
+int i;
+int largest = 0;
+int second = 0;
+
+/*runs for each element of the array A[] and if A[i] is larger than the current largest number, then largest becomes second largest and A[i] is the new largest number, then returns the second largest number*/
+
+for(i=0;i<length-1;i++)
+{
+	if(A[i]>largest)
+	{
+		second = largest;
+		largest=A[i];
+	}
+}
+
+  return second;
+}
+
+/* rotates the values in the array numPlaces to the right */
+/* for example, if A[] is initially 10,20,30,40,50, and numPlaces=2 */
+/* after the function finishes, A[] would be 40,50,10,20,30 */
+void rotate_right(int A[], int length, int numPlaces) {
+
+int l =0;
+int i;
+int temp=0;
+int templen;
+
+
+/*while loop runs for each number of spaces the values need to rotate*/
+
+while(l<numPlaces)
+{
+
+	l++;
+	
+/*copies the last element into a temporary variable to store so it is not lost*/
+
+	temp=A[length-1];
+
+
+/*runs through the loop starting at the last element and pulls each element to the right by one*/
+ 
+	for(i=length;i>0;i--)
+		A[i]=A[i-1];
+		
+		
+/*sets the first element equal the the temp which is holding the last element that was overwritten*/
+	
+		A[0]=temp;
+}
+
+}
+
+/* inserts the value n in A[] at the given index and shifts
+   all other values up one position.  A[] contains length items.
+
+   It is up to the caller to make sure that there is enough space
+   in A[] to accomodate the new item, and that the index is valid. */
+void insert(int A[], int n, int index, int length) {
+
+/*Since I can assume there is open space to insert, I start at the end of the array and map the contents of the address before it one to the right, once the length is equal to the index there should be an open space at A[n], which I then assign the value being passed */
+
+int i;
+
+for(i=length; i>index-1; i--)
+{
+	A[i]=A[i-1];
+}
+	A[index-1]=n;
+}
+
+/* copies the first numItems from S to D. */
+void array_copy(int D[], int S[], int numItems) {
+
+int i;
+
+/*runs the loop once for each element and sets the contents of the destination array equal to the source array at each address*/
+
+for(i=0;i<numItems;i++)
+{
+	D[i]=S[i];
+}
+}
+
+/* sets the first len elements of A to initialValue */
+void initialize(int A[], int len, int initialValue) {
+
+int i;
+
+for(i=0;i<len;i++)
+{
+	A[i]=initialValue;
+}
+}
+
+/* shuffles the values in A so that the even values
+   are all to the left of the odd values */
+void evens_on_left(int A[], int len) { 
+
+int i, j;
+int C[len];
+j=0;
+
+/*runs through the entire array and copies over the even numbers to a new array C[]*/
+
+	for(i=0;i<len;i++) 
+	{
+		
+		if(A[i]%2==0)
+		{
+			C[j]=A[i];
+			j++;
+		}
+	}
+
+/*runs back through array A[] and copies the remaining odd numbers into array C[]*/
+
+	for(i=0;i<len;i++)
+	{
+		if(A[i]%2!=0)
+		{
+			C[j]=A[i];
+			j++;
+		}
+	}
+
+/*calls the array copy function to copy array C[] contents into array A[]*/
+
+	array_copy(A,C,len);
+}
